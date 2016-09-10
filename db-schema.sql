@@ -2,6 +2,7 @@ create table users (
   id int not null auto_increment,
   name varchar(60) not null,
   description varchar (4000),
+  unique (name),
   primary key (id)
 );
 
