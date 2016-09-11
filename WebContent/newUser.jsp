@@ -18,7 +18,7 @@ Biography: <br>
 <textarea cols=100 rows=8 name="description"></textarea>
 <br>
 <input type="submit" value="Submit">
-<input type="reset">
+<input type="reset" value="Clear">
 </form>
 </body>
 </html>
