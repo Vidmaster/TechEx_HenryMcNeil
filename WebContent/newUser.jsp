@@ -8,17 +8,33 @@
 <title>Create New User</title>
 </head>
 <body class="w3-light-grey">
-	<h2>Create a new blog user:</h2>
-	<a href="index.jsp">&lt;&lt; Home</a>
-	<br><br>
-	<form action="UserServlet" method="post">
-		User Name: <input type="text" name="name" size=80 autofocus>
-		<br><br>
-		Biography: <br>
-		<textarea cols=100 rows=8 name="description"></textarea>
-		<br>
-		<input type="submit" value="Submit">
-		<input type="reset" value="Clear">
-	</form>
+	<div class="w3-content" style="max-width:1400px">
+		<div class="w3-row">
+			<span class="w3-padding-large w3-left"><a href="index.jsp">&lt;&lt; Home</a></span>
+		</div>
+		<div class="w3-container w3-center w3-padding-8">
+			<h2>Create a new blog user:</h2>
+		</div>
+		<div class="w3-row">
+			<div class="w3-col">
+				<div class="w3-card-4 w3-margin w3-white">
+					<div class="w3-container w3-padding-8">
+						<form action="UserServlet" method="post">
+							<div class="w3-row w3-container w3-padding-4">
+								User Name: <input type="text" name="name" size=80 class="w3-border w3-padding" autofocus>
+							</div>
+							<div class="w3-row w3-container w3-padding-4"><p>Biography:</p>
+								<textarea cols=100 rows=8 name="description" class="w3-border w3-padding"></textarea>
+							</div>
+							<div class="w3-row w3-container w3-padding-4">
+								<input class="w3-btn w3-padding-large w3-white w3-border w3-hover-border-black" type="submit" value="Submit">
+								<input class="w3-btn w3-padding-large w3-white w3-border w3-hover-border-black" type="reset" value="Reset">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
