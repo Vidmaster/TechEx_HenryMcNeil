@@ -40,12 +40,14 @@ public class AddCommentServlet extends HttpServlet {
 			stmt.setString(4, request.getParameter("text"));
 			stmt.executeUpdate();
 			
-			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/viewPost.jsp?postId=" + postId);
-			request.setAttribute("message", "<font color=green>Comment added!</font>");
-			dispatcher.forward(request,  response);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/viewPost.jsp?post=" + postId);
+			request.getSession().setAttribute("message", "<font color=green>Comment added!</font>");
+			response.sendRedirect("viewPost.jsp?post=" + postId);
+			dispatcher.include(request,  response);
+			
 		} catch (SQLException | ClassNotFoundException ex) {
 			System.out.println("Exception occurred: " + ex.getMessage());
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("WEB-INF/viewPost.jsp?postId=" + postId);
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("WEB-INF/viewPost.jsp?post=" + postId);
 			PrintWriter out= response.getWriter();
 			out.print("<font color=red>Unable to add comment: ");
 			out.print("Unable to post: " + ex.getMessage());

@@ -86,7 +86,8 @@ public class UserServlet extends HttpServlet {
 		}
 		
 		RequestDispatcher rd = getServletContext().getRequestDispatcher("/WEB-INF/index.jsp");
-		request.setAttribute("message", "<font color=green>New user created!</font>");
+		request.getSession().setAttribute("message", "<font color=green>New user created!</font>");
+		response.sendRedirect("index.jsp");
 		rd.include(request, response);		
 	}
 	

@@ -77,7 +77,7 @@ public class PostServlet extends HttpServlet {
 			stmt.executeUpdate();
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-			request.setAttribute("message", "<font color=green>Successfully posted!</font>");
+			request.getSession().setAttribute("message", "<font color=green>Successfully posted!</font>");
 			response.sendRedirect("index.jsp");
 			dispatcher.include(request,  response);
 			
