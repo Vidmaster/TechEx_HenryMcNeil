@@ -9,23 +9,22 @@
 <title>Create New Post</title>
 </head>
 <body>
-<h2>Create a new blog post:</h2>
-<a href="index.jsp">&lt;&lt; Home</a>
-<br><br>
-<form action="newPost.jsp" method="post">
-
-Subject: <input type="text" name="subject" size=80 autofocus><br>
-Author: <select name="user" required>
-	<c:forEach items="${users}" var="user">
-		<option value=${user.id}>${user.name}</option>
-	</c:forEach>
-</select>
-<br>
-Post: <br>
-<textarea cols=100 rows=8 name="body"></textarea>
-<br>
-<input type="submit" value="Submit">
-<input type="reset" value="Clear">
-</form>
+	<h2>Create a new blog post:</h2>
+	<a href="index.jsp">&lt;&lt; Home</a>
+	<br><br>
+	<form action="newPost.jsp" method="post">
+		Subject: <input type="text" name="subject" size=80 autofocus><br>
+		Author: <select name="user" required>
+			<c:forEach items="${users}" var="user">
+				<option value=${user.id}>${user.name}</option>
+			</c:forEach>
+		</select>
+		<br>
+		Post: <br>
+		<textarea cols=100 rows=20 name="body"></textarea>
+		<br>
+		<input type="submit" value="Submit">
+		<input type="reset" value="Clear">
+	</form>
 </body>
 </html>

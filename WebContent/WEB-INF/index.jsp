@@ -25,7 +25,7 @@
 				<h3><a href="viewPost.jsp?post=${post.id}">${post.subject}</a></h3>
 				<h4>Posted by <a href="viewUser.jsp?author=${post.userId}">${post.userName}</a> on ${post.posted}</h4>
 				<p>${post.body}</p>
-				<a href="viewPost.jsp#comments?post=${post.id}">Comments ( ${post.numComments} )</a> | <a href="viewPost.jsp#addComment?post=${post.id}">Add Comment</a>
+				<a href="viewPost.jsp?post=${post.id}">Comments ( ${post.numComments} )</a> | <a href="viewPost.jsp?post=${post.id}">Add Comment</a>
 			</div>
 			<br><br>
 		</c:forEach>

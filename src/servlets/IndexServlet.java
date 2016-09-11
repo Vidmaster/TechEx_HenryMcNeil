@@ -26,14 +26,6 @@ import domain.Post;
 @WebServlet("/index.jsp")
 public class IndexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public IndexServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -53,10 +45,10 @@ public class IndexServlet extends HttpServlet {
 					+ "WHERE users.id = posts.user_id \n"
 					+ "GROUP BY posts.id \n"
 					+ "ORDER BY posts.posted desc";
-			System.out.println(selectSQL);
 			
 			PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery();
+			
 			List<Post> posts = new ArrayList<Post>();
 			while (rs.next()) {
 				int id = rs.getInt("id");
@@ -75,7 +67,6 @@ public class IndexServlet extends HttpServlet {
 				Post post = new Post(id, userId, userName, subject, body, posted, updated, numComments);
 				
 				posts.add(post);
-				System.out.println(post.toString());
 			}
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/index.jsp");
@@ -84,14 +75,6 @@ public class IndexServlet extends HttpServlet {
 		} catch (SQLException | ClassNotFoundException ex) {
 			System.out.println("Exception occurred: " + ex.getMessage());
 		}
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
 	}
 
 }
