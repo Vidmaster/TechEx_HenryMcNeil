@@ -38,10 +38,9 @@ public class PostServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Connection conn = null;
-		
+		request.getSession().removeAttribute("message");
 		try {
-			conn = DatabaseUtilities.getDatabaseConnection();
+			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
 			String selectSQL = "SELECT id, name, description from users";
 			PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
@@ -55,7 +54,7 @@ public class PostServlet extends HttpServlet {
 				users.add(user);
 			}
 			
-			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/newPost.jsp");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/newPost.jsp");
 			request.setAttribute("users", users);
 			dispatcher.forward(request,  response);
 		} catch (SQLException | ClassNotFoundException ex) {
@@ -67,11 +66,10 @@ public class PostServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Connection conn = null;
-		
+		request.getSession().removeAttribute("message");
 		try {
-			conn = DatabaseUtilities.getDatabaseConnection();
-			String insertSQL = "INSERT INTO posts (subject, body, user_id) values (?, ?, ?)";
+			Connection conn = DatabaseUtilities.getDatabaseConnection();
+			String insertSQL = "INSERT INTO posts (subject, body, user_id, posted) values (?, ?, ?, current_timestamp)";
 			PreparedStatement stmt = conn.prepareStatement(insertSQL);
 			stmt.setString(1, request.getParameter("subject"));
 			stmt.setString(2, request.getParameter("body"));
@@ -80,6 +78,7 @@ public class PostServlet extends HttpServlet {
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
 			request.setAttribute("message", "<font color=green>Successfully posted!</font>");
+			response.sendRedirect("index.jsp");
 			dispatcher.include(request,  response);
 			
 		} catch (SQLException | ClassNotFoundException ex) {
@@ -87,8 +86,8 @@ public class PostServlet extends HttpServlet {
 			System.out.println("Exception occurred: " + ex.getMessage());
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/newPost.jsp");
 			PrintWriter out= response.getWriter();
-			out.print("<font color=red>Unable to create new user: ");
-			out.print("Unable to post: " + ex.getMessage());
+			out.print("<font color=red>Unable to post: ");
+			out.print(ex.getMessage());
 			out.println("</font>");
 			rd.include(request, response);
 		}

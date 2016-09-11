@@ -31,6 +31,7 @@ public class ViewUserServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().removeAttribute("message");
 		try {
 			int userId = Integer.parseInt(request.getParameter("author"));
 			User user = getUserDetails(userId);

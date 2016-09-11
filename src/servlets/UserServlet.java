@@ -25,9 +25,9 @@ public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Connection conn = null;
+		request.getSession().removeAttribute("message");
 		try {
-			conn = DatabaseUtilities.getDatabaseConnection();
+			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
 			String selectSQL = "SELECT id, name, description from users";
 			PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
@@ -45,17 +45,16 @@ public class UserServlet extends HttpServlet {
 			request.setAttribute("userList", users);
 			dispatcher.forward(request,  response);
 		} catch (SQLException | ClassNotFoundException ex) {
-			
+			System.out.println(ex.getMessage());
 		}
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		request.getSession().removeAttribute("message");
 		//get request parameters for userID and password
 		String name = request.getParameter("name");
 		String description = request.getParameter("description");
 		
-		System.out.println(request.getPathInfo());
 		log("User="+name+"::description="+description);
 		
 		if (name == null || name.isEmpty()) {

@@ -1,13 +1,12 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,21 +16,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import database.DatabaseUtilities;
-import domain.Comment;
 import domain.Post;
-import domain.User;
 
 /**
- * Servlet implementation class ViewPostServlet
+ * Servlet implementation class EditPostServlet
  */
-@WebServlet("/viewPost.jsp")
-public class ViewPostServlet extends HttpServlet {
+@WebServlet("/editPost.jsp")
+public class EditPostServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ViewPostServlet() {
+    public EditPostServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -44,19 +41,46 @@ public class ViewPostServlet extends HttpServlet {
 		try {
 			int postId = Integer.parseInt(request.getParameter("post"));
 			Post post = getPost(postId);
-			List<Comment> comments = getCommentsForPost(postId);
 			
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/viewPost.jsp?post=" + postId);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/editPost.jsp?post=" + postId);
 			request.setAttribute("post", post);
-			request.setAttribute("comments", comments);
-	        dispatcher.forward(request,  response);
-			
+			dispatcher.forward(request,  response);
 		} catch (SQLException | ClassNotFoundException ex) {
 			System.out.println(ex.getMessage());
-			ex.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
+		request.getSession().removeAttribute("message");
+		int postId = Integer.parseInt(request.getParameter("post"));
+		try {
+			Connection conn = DatabaseUtilities.getDatabaseConnection();
+			
+			String insertSQL = "UPDATE posts SET subject = ?, body = ?, updated=CURRENT_TIMESTAMP, posted=posted WHERE id = ?";
+			PreparedStatement stmt = conn.prepareStatement(insertSQL);
+			stmt.setString(1, request.getParameter("subject"));
+			stmt.setString(2, request.getParameter("body"));
+			stmt.setInt(3, postId);
+			stmt.executeUpdate();
+			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/viewPost.jsp?post=" + postId);
+			request.getSession().setAttribute("message", "<font color=green>Successfully updated!</font>");
+			response.sendRedirect("viewPost.jsp?post=" + postId);
+			dispatcher.include(request,  response);
+			
+		} catch (SQLException | ClassNotFoundException ex) {
+			System.out.println("Exception occurred: " + ex.getMessage());
+			String message = "<font color=red>Unable to update: " + ex.getMessage() + "</font>";
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/editPost.jsp?post=" + postId);
+			request.getSession().setAttribute("message", message);
+			response.sendRedirect("editPost.jsp?post=" + postId);
+			dispatcher.include(request,  response);
+		}
+	}
+
 	private Post getPost(int postId) throws ClassNotFoundException, SQLException {
 		Connection conn = DatabaseUtilities.getDatabaseConnection();
 		
@@ -86,7 +110,7 @@ public class ViewPostServlet extends HttpServlet {
 			Date posted = rs.getTimestamp("posted");
 			Date updated = null;
 			try {
-				updated = rs.getTimestamp("updated");
+				updated = rs.getDate("updated");
 			} catch (Exception ex) {
 				
 			}
@@ -97,27 +121,4 @@ public class ViewPostServlet extends HttpServlet {
 		return post;
 	}
 	
-	private List<Comment> getCommentsForPost(int postId) throws ClassNotFoundException, SQLException {
-		Connection conn = DatabaseUtilities.getDatabaseConnection();
-		
-		String selectSQL = "SELECT id, subject, author_name, text, posted FROM comments WHERE post_id = ? ORDER BY posted";
-		PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
-		preparedStatement.setInt(1, postId);
-		ResultSet rs = preparedStatement.executeQuery();
-		
-		List<Comment> comments = new ArrayList<Comment>();
-		while (rs.next()) {
-			int id = rs.getInt("id");
-			String authorName = rs.getString("author_name");
-			String subject = rs.getString("subject");
-			String text = rs.getString("text");
-			Date posted = rs.getTimestamp("posted");
-			
-			Comment comment = new Comment(id, postId, authorName, subject, text, posted);
-			comments.add(comment);
-		}
-		
-		return comments;
-	}
-
 }

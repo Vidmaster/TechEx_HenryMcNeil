@@ -4,11 +4,12 @@
     
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<link rel="stylesheet" href="w3.css">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Create New Post</title>
 </head>
-<body>
+<body class="w3-light-grey">
 	<h2>Create a new blog post:</h2>
 	<a href="index.jsp">&lt;&lt; Home</a>
 	<br><br>
@@ -16,7 +17,7 @@
 		Subject: <input type="text" name="subject" size=80 autofocus><br>
 		Author: <select name="user" required>
 			<c:forEach items="${users}" var="user">
-				<option value=${user.id}>${user.name}</option>
+				<option value="${user.id}"><c:out value="${user.name}" /></option>
 			</c:forEach>
 		</select>
 		<br>

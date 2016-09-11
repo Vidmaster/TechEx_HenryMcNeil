@@ -31,6 +31,7 @@ public class IndexServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().removeAttribute("message");
 		Connection conn = null;
 		try {
 			conn = DatabaseUtilities.getDatabaseConnection();
@@ -59,7 +60,7 @@ public class IndexServlet extends HttpServlet {
 				Date posted = rs.getTimestamp("posted");
 				Date updated = null;
 				try {
-					updated = rs.getDate("updated");
+					updated = rs.getTimestamp("updated");
 				} catch (Exception ex) {
 					
 				}

@@ -4,27 +4,29 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<link rel="stylesheet" href="w3.css">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>View Post: ${post.subject}</title>
 </head>
-<body>
+<body class="w3-light-grey">
 	<c:if test="${!message.isEmpty()}">
 		${message}
 	</c:if>
 	<a href="index.jsp">&lt;&lt; Home</a>
 	<div class="post" id="post${post.id}">
-		<h3><a href="viewPost.jsp?post=${post.id}">${post.subject}</a></h3>
-		<h4>Posted by <a href="viewUser.jsp?author=${post.userId}">${post.userName}</a> on ${post.posted}</h4>
-		<p>${post.body}</p>
+		<h3><a href="viewPost.jsp?post=${post.id}"><c:out value="${post.subject}" /></a></h3>
+		<h4>Posted by <a href="viewUser.jsp?author=${post.userId}"><c:out value="${post.userName}" /></a> on ${post.posted}<c:if test="${post.updated != null}">, updated on ${post.updated}</c:if></h4>
+		
+		<p><c:out value="${post.body}" /></p>
 		<p><a href="editPost.jsp?post=${post.id}">Edit post</a>
 	</div>
 	<div class="comments" id="comments">
 		<c:forEach items="${comments}" var="comment">
 			<div class="comment" id="comment${comment.id}">
-				<h4>${comment.subject}</h4>
-				Posted by ${comment.authorName} at ${comment.posted}
-				<p>${comment.text}</p>
+				<h4><c:out value="${comment.subject}" /></h4>
+				Posted by <c:out value="${comment.authorName}" /> at ${comment.posted}
+				<p><c:out value="${comment.text}" /></p>
 			</div>
 		</c:forEach>
 	</div>	

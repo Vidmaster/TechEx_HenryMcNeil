@@ -26,11 +26,12 @@ public class AddCommentServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().removeAttribute("message");
 		int postId = Integer.parseInt(request.getParameter("post"));
 		try {
 			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
-			String insertSQL = "INSERT INTO comments (post_id, subject, author_name, text) values (?, ?, ?, ?)";
+			String insertSQL = "INSERT INTO comments (post_id, subject, author_name, text, posted) values (?, ?, ?, ?, current_timestamp)";
 			
 			PreparedStatement stmt = conn.prepareStatement(insertSQL);
 			stmt.setInt(1, postId);
