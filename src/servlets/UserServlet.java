@@ -29,7 +29,7 @@ public class UserServlet extends HttpServlet {
 		try {
 			conn = DatabaseUtilities.getDatabaseConnection();
 			
-			String selectSQL = "SELECT id, name, description from USERS";
+			String selectSQL = "SELECT id, name, description from users";
 			PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
 			ResultSet rs = preparedStatement.executeQuery();
 			List<User> users = new ArrayList<User>();

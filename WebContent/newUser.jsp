@@ -8,7 +8,7 @@
 </head>
 <body>
 <h2>Create a new blog user:</h2>
-<a href="javascript:history.back()">&lt;&lt; Back</a>
+<a href="index.jsp">&lt;&lt; Home</a>
 <br><br>
 <form action="UserServlet" method="post">
 

@@ -10,7 +10,7 @@
 </head>
 <body>
 <h2>Create a new blog post:</h2>
-<a href="javascript:history.back()">&lt;&lt; Back</a>
+<a href="index.jsp">&lt;&lt; Home</a>
 <br><br>
 <form action="newPost.jsp" method="post">
 

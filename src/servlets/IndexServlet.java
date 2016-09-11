@@ -43,8 +43,6 @@ public class IndexServlet extends HttpServlet {
 		try {
 			conn = DatabaseUtilities.getDatabaseConnection();
 			
-			// LEFT(your_column, 100)
-			//String selectSQL = "SELECT id, name, description from users";
 			String selectSQL = "SELECT posts.id as id, posts.subject as subject, "
 					+ "users.name as userName, users.id as userId, left(posts.body, 500) as body, "
 					+ "posts.posted as posted, posts.updated as updated, "
@@ -61,9 +59,6 @@ public class IndexServlet extends HttpServlet {
 			ResultSet rs = preparedStatement.executeQuery();
 			List<Post> posts = new ArrayList<Post>();
 			while (rs.next()) {
-//				String name = rs.getString("name");
-//				String description = rs.getString("description");
-//				User user = new User(id, name, description);
 				int id = rs.getInt("id");
 				int userId = rs.getInt("userId");
 				String subject = rs.getString("subject");
