@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,15 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import database.DatabaseUtilities;
 import domain.User;
-/**
- * Servlet Tutorial - Servlet Example
- */
+
+
 @WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
+		ServletUtilities.checkErrorMessage(request);
+		
 		try {
 			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
@@ -50,38 +51,32 @@ public class UserServlet extends HttpServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
-		//get request parameters for userID and password
+		ServletUtilities.checkErrorMessage(request);
+		
 		String name = request.getParameter("name");
 		String description = request.getParameter("description");
 		
 		log("User="+name+"::description="+description);
 		
 		if (name == null || name.isEmpty()) {
-			failPost(request, response, "Name is required");
+			ServletUtilities.failPost(request, response, getServletContext(), "newUser.jsp", "Name is required");
 			return;
 		}
 		if (description == null || description.isEmpty()) {
-			failPost(request, response, "Description is required");
-			return;
-		}
-		
-		Connection conn = null;
-		try {
-			conn = DatabaseUtilities.getDatabaseConnection();
-		} catch (SQLException | ClassNotFoundException ex) {
-			failPost(request, response, "Unable to get database connection. " + ex.getMessage());
+			ServletUtilities.failPost(request, response, getServletContext(), "newUser.jsp", "Description is required");
 			return;
 		}
 		
 		try {
+			Connection conn = DatabaseUtilities.getDatabaseConnection();
+			
 			String insertSQL = "INSERT INTO users (name, description) VALUES (?,?)";
 			PreparedStatement preparedStatement = conn.prepareStatement(insertSQL);
 			preparedStatement.setString(1, name);
 			preparedStatement.setString(2, description);
 			preparedStatement.executeUpdate();
-		} catch (SQLException ex) {
-			failPost(request, response, "Unable to add user: " + ex.getMessage());
+		} catch (SQLException | ClassNotFoundException ex) {
+			ServletUtilities.failPost(request, response, getServletContext(), "addUser.jsp", "Unable to add user: " + ex.getMessage());
 			return;
 		}
 		
@@ -90,14 +85,5 @@ public class UserServlet extends HttpServlet {
 		response.sendRedirect("index.jsp");
 		rd.include(request, response);		
 	}
-	
-	private void failPost(HttpServletRequest request, HttpServletResponse response, String reason) throws IOException, ServletException {
-		
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/newUser.jsp");
-		PrintWriter out= response.getWriter();
-		out.print("<font color=red>Unable to create new user: ");
-		out.print(reason);
-		out.println("</font>");
-		rd.include(request, response);
-	}
+
 }

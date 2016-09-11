@@ -31,10 +31,10 @@ public class IndexServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
-		Connection conn = null;
+		ServletUtilities.checkErrorMessage(request);
+		
 		try {
-			conn = DatabaseUtilities.getDatabaseConnection();
+			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
 			String selectSQL = "SELECT posts.id as id, posts.subject as subject, "
 					+ "users.name as userName, users.id as userId, left(posts.body, 500) as body, "

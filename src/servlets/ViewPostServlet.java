@@ -32,7 +32,6 @@ public class ViewPostServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
 		try {
 			int postId = Integer.parseInt(request.getParameter("post"));
 			Post post = getPost(postId);

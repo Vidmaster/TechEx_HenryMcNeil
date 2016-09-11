@@ -37,7 +37,8 @@ public class EditPostServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
+		ServletUtilities.checkErrorMessage(request);
+		
 		try {
 			int postId = Integer.parseInt(request.getParameter("post"));
 			Post post = getPost(postId);
@@ -54,7 +55,8 @@ public class EditPostServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
-		request.getSession().removeAttribute("message");
+		ServletUtilities.checkErrorMessage(request);
+		
 		int postId = Integer.parseInt(request.getParameter("post"));
 		try {
 			Connection conn = DatabaseUtilities.getDatabaseConnection();

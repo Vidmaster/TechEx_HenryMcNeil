@@ -38,7 +38,8 @@ public class PostServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
+		ServletUtilities.checkErrorMessage(request);
+		
 		try {
 			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
@@ -66,7 +67,8 @@ public class PostServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
+		ServletUtilities.checkErrorMessage(request);
+		
 		try {
 			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			String insertSQL = "INSERT INTO posts (subject, body, user_id, posted) values (?, ?, ?, current_timestamp)";
@@ -78,6 +80,7 @@ public class PostServlet extends HttpServlet {
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
 			request.getSession().setAttribute("message", "<font color=green>Successfully posted!</font>");
+			request.getSession().setAttribute("clearMessage", false);
 			response.sendRedirect("index.jsp");
 			dispatcher.include(request,  response);
 			

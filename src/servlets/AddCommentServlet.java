@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -26,8 +25,26 @@ public class AddCommentServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().removeAttribute("message");
+		ServletUtilities.checkErrorMessage(request);
+		
 		int postId = Integer.parseInt(request.getParameter("post"));
+		String subject = request.getParameter("subject");
+		String author = request.getParameter("author_name");
+		String text = request.getParameter("text");
+		
+		if (subject == null || subject.isEmpty()) {
+			ServletUtilities.failPost(request, response, getServletContext(), "viewPost.jsp?post=" + postId, "Subject is required");
+			return;
+		}
+		if (author == null || author.isEmpty()) {
+			ServletUtilities.failPost(request, response, getServletContext(), "viewPost.jsp?post=" + postId, "Author is required");
+			return;
+		}
+		if (text == null || text.isEmpty()) {
+			ServletUtilities.failPost(request, response, getServletContext(), "viewPost.jsp?post=" + postId, "Text is required");
+			return;
+		}
+		
 		try {
 			Connection conn = DatabaseUtilities.getDatabaseConnection();
 			
@@ -35,24 +52,21 @@ public class AddCommentServlet extends HttpServlet {
 			
 			PreparedStatement stmt = conn.prepareStatement(insertSQL);
 			stmt.setInt(1, postId);
-			stmt.setString(2, request.getParameter("subject"));
-			stmt.setString(3, request.getParameter("author_name"));
-			stmt.setString(4, request.getParameter("text"));
+			
+			stmt.setString(2, subject);
+			stmt.setString(3, author);
+			stmt.setString(4, text);
 			stmt.executeUpdate();
 			
-			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/viewPost.jsp?post=" + postId);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/viewPost.jsp?post=" + postId);
 			request.getSession().setAttribute("message", "<font color=green>Comment added!</font>");
+			request.getSession().setAttribute("clearMessage", false);
 			response.sendRedirect("viewPost.jsp?post=" + postId);
 			dispatcher.include(request,  response);
 			
 		} catch (SQLException | ClassNotFoundException ex) {
-			System.out.println("Exception occurred: " + ex.getMessage());
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("WEB-INF/viewPost.jsp?post=" + postId);
-			PrintWriter out= response.getWriter();
-			out.print("<font color=red>Unable to add comment: ");
-			out.print("Unable to post: " + ex.getMessage());
-			out.println("</font>");
-			rd.include(request, response);
+			String message = "<font color=red>Unable to add comment: " + ex.getMessage() + "</font>";
+			ServletUtilities.failPost(request, response, getServletContext(), "viewPost.jsp?post=" + postId, message);
 		}
 	}
 	
