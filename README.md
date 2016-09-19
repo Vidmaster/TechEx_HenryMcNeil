@@ -1,6 +1,10 @@
 # TechEx_HenryMcNeil
-CSCI4830 Tech Exercise
+### CSCI4830 Tech Exercise
 
-Required .JAR files:
-	jstl-1.2.jar - for JSTL tags in various jsp pages
-	mysql-connector-java-5.1.39-bin.jar - for MySQL JDBC connectivity
+To run:
+1. Install tomcat and MySQL
+2. Clone the repo
+3. mvn clean package
+4. Set environment variables for tomcat for `DB_USER`, `DB_PW`, and `DB_URL`
+  + It may be necessary to restart tomcat after this
+5. Deploy .war file to local tomcat server instance
